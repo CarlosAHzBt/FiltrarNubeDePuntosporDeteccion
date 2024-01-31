@@ -1,56 +1,50 @@
-# FiltrarNubeDePuntosporDeteccion
 # Proyecto de Detección y Análisis de Baches
 
 ## Descripción General
-Este proyecto tiene como objetivo detectar, analizar y cuantificar baches en carreteras o calles urbanas utilizando técnicas de visión por computadora y procesamiento de imágenes 3D. A través de la secuencia de pasos implementados en Python, el proyecto procesa datos de sensores de profundidad para identificar baches, determinar su ubicación y tamaño, y generar una nube de puntos 3D detallada de la región de interés.
+Este proyecto se enfoca en la detección y análisis de baches utilizando técnicas de visión por computadora y procesamiento de imágenes 3D. Procesa datos de sensores de profundidad para identificar baches, determinar su ubicación y tamaño, y generar una nube de puntos 3D detallada de la región de interés.
 
-## Componentes del Proyecto
+## Secuencia de Ejecución y Componentes del Proyecto
 
-### 1. `BagFileProcessor`
-- **Descripción**: Esta clase se encarga de procesar archivos `.bag` para extraer imágenes RGB, imágenes de profundidad y nubes de puntos (formato PLY).
-- **Funcionalidades**:
-  - Configura y ejecuta un pipeline para leer desde archivos `.bag`.
-  - Extrae y guarda imágenes RGB y de profundidad.
-  - Genera y almacena nubes de puntos PLY.
+### 1. `Extractora.py` (Clase `BagFileProcessor`)
+- **Descripción**: Maneja la extracción de datos de archivos `.bag`, incluyendo imágenes RGB, imágenes de profundidad y nubes de puntos.
+- **Funcionalidades Principales**:
+  - Configura y ejecuta un pipeline para leer datos de archivos `.bag`.
+  - Extrae y guarda el primer frame de profundidad y RGB.
+  - Genera y almacena una nube de puntos en formato PLY.
 
-### 2. `YoloDetector`
-- **Descripción**: Implementa un modelo YOLO para detectar baches en las imágenes RGB extraídas.
-- **Funcionalidades**:
-  - Carga el modelo YOLO preentrenado.
-  - Realiza detecciones en imágenes.
-  - Guarda imágenes con detecciones y las coordenadas de los baches detectados.
+### 2. `DetectorBaches.py` (Clase `YoloDetector`)
+- **Descripción**: Utiliza un modelo YOLO para detectar baches en imágenes RGB.
+- **Funcionalidades Principales**:
+  - Carga y aplica el modelo YOLO preentrenado.
+  - Procesa imágenes RGB para identificar baches.
+  - Guarda las coordenadas de baches detectados y las imágenes resultantes.
 
-### 3. `ROICoordinateConverter`
-- **Descripción**: Convierte las coordenadas de la región de interés (ROI) de píxeles a metros.
-- **Funcionalidades**:
-  - Calcula la escala de conversión basada en la altura de captura y resolución de la cámara.
-  - Convierte coordenadas de la ROI de píxeles a metros.
-  - Guarda las coordenadas convertidas en un archivo JSON.
+### 3. `ObtenerAlturaDeCaptura.py` (Clase `AlturaCaptura`)
+- **Descripción**: Estima la altura de la superficie a partir de la nube de puntos.
+- **Funcionalidades Principales**:
+  - Analiza la nube de puntos para estimar la altura de la superficie de captura.
 
-### 4. `PointCloudFilter`
-- **Descripción**: Filtra la nube de puntos PLY para conservar solo aquellos puntos dentro de la ROI.
-- **Funcionalidades**:
-  - Carga la ROI desde un archivo JSON.
-  - Filtra la nube de puntos según la ROI.
+### 4. `TransformacionROI.py` (Clase `ROICoordinateConverter`)
+- **Descripción**: Transforma coordenadas de la ROI de píxeles a metros.
+- **Funcionalidades Principales**:
+  - Calcula la escala de conversión de píxeles a metros.
+  - Convierte y guarda las coordenadas de la ROI en metros.
+
+### 5. `FiltrarNP.py` (Clase `PointCloudFilter`)
+- **Descripción**: Filtra la nube de puntos para conservar solo los puntos dentro de la ROI.
+- **Funcionalidades Principales**:
+  - Carga la nube de puntos y datos de la ROI.
+    
+  - Filtra la nube de puntos utilizando los límites de la ROI.
+    
   - Visualiza y guarda la nube de puntos filtrada.
-
-### 5. `AlturaCaptura`
-- **Descripción**: Calcula la altura aproximada de la captura de la nube de puntos.
-- **Funcionalidades**:
-  - Analiza la nube de puntos para estimar la altura de la superficie capturada.
-
-## Flujo del Proyecto
-1. **Extracción de Datos**: Uso de `BagFileProcessor` para obtener imágenes y nubes de puntos de archivos `.bag`.
-2. **Detección de Baches**: Aplicación de `YoloDetector` para identificar baches en imágenes RGB.
-3. **Asignación de Coordenadas**: Transformación de las coordenadas de los baches a metros utilizando `ROICoordinateConverter`.
-4. **Filtrado de Nube de Puntos**: Selección de puntos dentro de la ROI con `PointCloudFilter`, basada en las coordenadas transformadas.
-5. **Análisis de Profundidad**: Uso de `AlturaCaptura` para cálculos relacionados con la profundidad y dimensiones de los baches.
 
 ## Uso del Proyecto
 Para ejecutar el proyecto, siga los siguientes pasos:
-1. Coloque su archivo `.bag` en la carpeta `POO/ArchivoBag`.
-2. Ejecute el script principal `main.py`.
-3. Revise los resultados en las carpetas correspondientes para imágenes procesadas, coordenadas y nubes de puntos filtradas.
+
+  -Coloque su archivo .bag en la carpeta POO/ArchivoBag.
+  -Ejecute el script principal main.py.
+  -Revise los resultados en las carpetas correspondientes para imágenes procesadas, coordenadas y nubes de puntos filtradas.
 
 ## Requisitos
 - Python 3.x
