@@ -30,7 +30,4 @@ class AlturaCaptura:
 
 
 
-ruta_archivo_ply = "ArchivosDeLaExtraccion/Ply/output.ply"
-altura_captura = AlturaCaptura(ruta_archivo_ply)
-altura = altura_captura.calcular_altura()
-print("Altura de la captura (moda en el eje Z):", altura)
+ 

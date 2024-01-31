@@ -3,25 +3,28 @@ import numpy as np
 import json
 
 class PointCloudFilter:
-    def __init__(self):
+    def __init__(self,coor_path,ply_path):
         """
         Inicializa el filtro de nube de puntos.
 
         :param json_path: Ruta al archivo JSON que contiene la región de interés.
         :param ply_path: Ruta al archivo PLY de la nube de puntos.
         """
-        self.json_path = "ResultadosDeteccion/Coordenadas/roi.json"
-        self.ply_path = "ArchivosDeLaExtraccion/Ply/output.ply"
+        self.txt_path = coor_path
+        self.ply_path = ply_path
         self.roi_data = None
         self.pcd = None
         
 
     def load_roi_data(self):
         """
-        Carga la región de interés desde el archivo JSON.
+        Carga la región de interés desde el archivo txt.
         """
-        with open(self.json_path, 'r') as file:
-            self.roi_data = json.load(file)
+        
+        with open(self.txt_path, 'r') as file:
+            # Lee la única línea que contiene la lista en formato JSON
+            line = file.readline().strip()
+            self.roi_data = json.loads(line)
 
     def load_point_cloud(self):
         """

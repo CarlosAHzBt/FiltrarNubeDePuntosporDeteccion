@@ -6,12 +6,9 @@ import json
 class YoloDetector:
     def __init__(self):
         self.model = YOLO("ResultadosDeteccion/ModeloDeteccion/best.pt")
-        self.source_folder = "Paso1-ExtraerPLYyDepthFrame/ColorImage"
-        #self.target_folder = target_folder
+        self.source_folder = "ArchivosDeLaExtraccion/RGB"
         self.coords_folder = "ResultadosDeteccion/Coordenadas"
 
-        # Crear carpetas si no existen
-        #os.makedirs(self.target_folder, exist_ok=True)
         os.makedirs(self.coords_folder, exist_ok=True)
 
     def process_images(self):
@@ -28,26 +25,21 @@ class YoloDetector:
         results = self.model.predict(source=image, conf=0.5)
 
         try:
-            names = self.model.names
-            car_id = list(names)[list(names.values()).index('Bache')]
-            number = results[0].boxes.cls.tolist().count(car_id)
-
-            detections = results[0].boxes.xyxy[0]  # Get detection bounding boxes
-
-            if number == 1:
-                for r in results:
-                    for c in r.boxes.cls:
-                        print(self.model.names[int(c)])
-
-                with open(os.path.join(self.coords_folder, filename.replace('.png', '.txt')), 'w') as f:
-                    f.write(str(detections.tolist()))
-
-                #image.save(os.path.join(self.target_folder, filename))
-        except:
-            print("No se detecto nada")
-            image.save(os.path.join('ImagenesResultados/NoIdentificadas', filename))
-
-
+            detections = results[0].boxes.xyxy  # Get detection bounding boxes
+            # Check if there are detections
+            if len(detections) > 0:
+                detections_list = []
+                for detection in detections:
+                    detections_list.append(detection.tolist())
+                
+                # Write detections to a file
+                with open(os.path.join(self.coords_folder, filename.replace('.png', '.txt').replace('.jpg', '.txt').replace('.jpeg', '.txt')), 'w') as f:
+                    for det in detections_list:
+                        f.write(f'{det}\n')
+            else:
+                print(f"No detections in {filename}")
+        except Exception as e:
+            print(f"Error processing {filename}: {e}")
  
 
 detector = YoloDetector()

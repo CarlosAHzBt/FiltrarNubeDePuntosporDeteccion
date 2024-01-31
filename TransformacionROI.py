@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 import json
 import math
+from ObtenerAlturaDeCaptura import AlturaCaptura
 
 class ROICoordinateConverter:
     def __init__(self):
@@ -11,6 +12,13 @@ class ROICoordinateConverter:
         self.resolucion_ancho = 864 # Resolución en píxeles (ancho) 
         self.resolucion_alto = 512  # Resolución en píxeles (alto)
 
+    def estimar_altura_de_captura(self,ply_path):
+        """
+        Estima la altura de captura de la nube de puntos PLY.
+        """
+        altura_captura = AlturaCaptura(ply_path)
+        return altura_captura.calcular_altura()
+    
     def calcular_escala(self, altura_captura):
         """
         Calcula las escalas de conversión de píxeles a metros basadas en la altura de captura.
@@ -31,11 +39,11 @@ class ROICoordinateConverter:
         y2_metros = (y1_pix - centro_y) * escala_vertical
         return x1_metros, y1_metros, x2_metros, y2_metros
 
-    def definir_roi_y_guardar(self, altura_captura, image_path, output_path, txt_path):
+    def definir_roi_y_guardar(self,alturaDeCaptura, image_path, output_path, txt_path):
         """
         Define la ROI en la imagen y guarda las coordenadas en metros en un Json.
         """
-        escala_horizontal, escala_vertical = self.calcular_escala(altura_captura)
+        #alturaDeCaptura = self.estimar_altura_de_captura(ply_path)
 
         # Cargar imagen y obtener centro
         depth_image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
@@ -46,7 +54,8 @@ class ROICoordinateConverter:
         with open(txt_path, 'r') as file:
             coords = file.readline().strip()
         x1, y1, x2, y2 = [int(float(coord)) for coord in coords[1:-1].split(', ')]
-
+        #Calcular Escala segun la altura de captura
+        escala_horizontal, escala_vertical = self.calcular_escala(alturaDeCaptura)
         # Convertir coordenadas de píxeles a metros
         x1_metros, y1_metros, x2_metros, y2_metros = self.convertir_pixeles_a_metros(x1, y1, x2, y2, escala_horizontal, escala_vertical, centro_x, centro_y)
 
