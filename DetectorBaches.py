@@ -5,7 +5,7 @@ import json
 
 class YoloDetector:
     def __init__(self):
-        self.model = YOLO("ResultadosDeteccion/ModeloDeteccion/best.pt")
+        self.model = YOLO("ModeloDeteccion/best.pt")
         self.source_folder = "ArchivosDeLaExtraccion/RGB"
         self.coords_folder = "ResultadosDeteccion/Coordenadas"
 

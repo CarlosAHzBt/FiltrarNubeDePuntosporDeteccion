@@ -52,6 +52,3 @@ class BagFileProcessor:
         points = pc.calculate(depth_frame)
         points.export_to_ply(f'ArchivosDeLaExtraccion/Ply/output_{self.frame_count}.ply', aligned_frames.get_color_frame())
 
-# Uso de la clase
-processor = BagFileProcessor('ArchivoBag/BacheRef2.bag')
-processor.process_frames()
