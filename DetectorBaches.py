@@ -5,10 +5,10 @@ import json
 
 class YoloDetector:
     def __init__(self):
-        self.model = YOLO("POO/ResultadosDeteccion/ModeloDeteccion/best.pt")
+        self.model = YOLO("ResultadosDeteccion/ModeloDeteccion/best.pt")
         self.source_folder = "Paso1-ExtraerPLYyDepthFrame/ColorImage"
         #self.target_folder = target_folder
-        self.coords_folder = "POO/ResultadosDeteccion/Coordenadas"
+        self.coords_folder = "ResultadosDeteccion/Coordenadas"
 
         # Crear carpetas si no existen
         #os.makedirs(self.target_folder, exist_ok=True)

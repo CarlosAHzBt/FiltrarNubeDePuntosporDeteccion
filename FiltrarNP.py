@@ -10,8 +10,8 @@ class PointCloudFilter:
         :param json_path: Ruta al archivo JSON que contiene la región de interés.
         :param ply_path: Ruta al archivo PLY de la nube de puntos.
         """
-        self.json_path = "POO/ResultadosDeteccion/Coordenadas/roi.json"
-        self.ply_path = "POO/ArchivosDeLaExtraccion/Ply/output.ply"
+        self.json_path = "ResultadosDeteccion/Coordenadas/roi.json"
+        self.ply_path = "ArchivosDeLaExtraccion/Ply/output.ply"
         self.roi_data = None
         self.pcd = None
         

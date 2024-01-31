@@ -58,7 +58,7 @@ def procesar_imagenes():
     print("Se procederá a filtrar la nube de puntos.")
 
 def estimar_superficie_de_captura():
-    ruta_archivo_ply = "POO/ArchivosDeLaExtraccion/Ply/output.ply"
+    ruta_archivo_ply = "ArchivosDeLaExtraccion/Ply/output.ply"
     altura_captura = AlturaCaptura(ruta_archivo_ply)
     altura = altura_captura.calcular_altura()
     print("Altura de la captura (moda en el eje Z):", altura)
@@ -66,7 +66,7 @@ def estimar_superficie_de_captura():
 
 def asignar_coordenadas_a_imagen(altura_captura):
     roi_converter = ROICoordinateConverter()
-    roi_converter.definir_roi_y_guardar(altura_captura,"POO/ArchivosDeLaExtraccion/RGB/RGBcolor_image.png" ,"POO/ResultadosDeteccion/Coordenadas/roi.json", "POO/ResultadosDeteccion/Coordenadas/color_image.txt")
+    roi_converter.definir_roi_y_guardar(altura_captura,"ArchivosDeLaExtraccion/RGB/RGBcolor_image.png" ,"POO/ResultadosDeteccion/Coordenadas/roi.json", "POO/ResultadosDeteccion/Coordenadas/color_image.txt")
     print("Se procederá a filtrar la nube de puntos.")
 
 
@@ -77,7 +77,7 @@ def filtrar_nube_de_puntos():
     #filter.visualize_point_cloud(pcd)
     filtered_pcd = filter.filter_points_in_roi()
     filter.visualize_point_cloud(filtered_pcd)
-    filter.save_point_cloud("POO/NubeDePuntosFiltrada/Np.ply", filtered_pcd)
+    filter.save_point_cloud("NubeDePuntosFiltrada/Np.ply", filtered_pcd)
     
 if __name__ == '__main__':
     main()
