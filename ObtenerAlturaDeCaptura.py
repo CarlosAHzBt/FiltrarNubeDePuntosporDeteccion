@@ -1,8 +1,7 @@
 #Clase para obtener altura de captura sacando la media de puntos de la nube de puntos PLY
 import open3d as o3d
 import numpy as np
-from scipy import stats
-
+ 
 
 class AlturaCaptura:
     def __init__(self, archivo_ply):

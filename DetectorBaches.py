@@ -44,3 +44,4 @@ class YoloDetector:
 
 detector = YoloDetector()
 detector.process_images()
+ 
