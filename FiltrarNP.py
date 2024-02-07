@@ -18,39 +18,26 @@ class PointCloudFilter:
         self.pcd = None
         
 
-    def load_roi_data(self):
+    
+    def load_roi_data(self, filename):
         """
-        Carga y procesa datos de ROI desde múltiples archivos basados en un patrón de nombre de archivo.
+        Carga datos de ROI desde un archivo JSON especificado.
 
-        Args:
-        - base_path: La ruta de la carpeta donde se encuentran los archivos.
-        - base_filename: El nombre base del archivo sin el índice y la extensión.
+        :param filename: Nombre del archivo a cargar, sin la ruta completa.
         """
-        base_filename="RGBcolor_image_*.txt_*.txt"
-        # Construye el patrón para buscar archivos que coincidan con el nombre base y cualquier índice extra
-        search_pattern = os.path.join(self.txt_path, f"{base_filename}_*.txt")
+        file_path = os.path.join(self.txt_path, filename)
 
-        # Encuentra todos los archivos que coincidan con el patrón
-        matching_files = glob.glob(search_pattern)
+        try:
+            with open(file_path, 'r') as file:
+                # Carga los datos de ROI
+                self.roi_data = json.load(file)
+                print(f"Datos de ROI cargados de {file_path}: {self.roi_data}")
 
-        # Procesa cada archivo encontrado
-        for file_path in matching_files:
-            try:
-                with open(file_path, 'r') as file:
-                    # Asume que cada archivo contiene un objeto JSON
-                    roi_data = json.load(file)
-                    # Aquí puedes procesar los datos de ROI como necesites
-                    print(f"Datos cargados de {file_path}: {roi_data}")
-
-                    # Opcional: Si deseas eliminar el archivo después de procesarlo
-                    os.remove(file_path)
-                    print(f"Archivo eliminado: {file_path}")
-
-            except json.JSONDecodeError as e:
-                print(f"Error al decodificar JSON en {file_path}: {e}")
-            except FileNotFoundError as e:
-                print(f"Archivo no encontrado: {file_path}: {e}")
-
+        except json.JSONDecodeError as e:
+            print(f"Error al decodificar JSON en {file_path}: {e}")
+        except FileNotFoundError as e:
+            print(f"Archivo no encontrado: {file_path}: {e}")
+            
     def load_point_cloud(self):
         """
         Carga la nube de puntos desde el archivo PLY.
