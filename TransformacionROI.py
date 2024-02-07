@@ -39,33 +39,40 @@ class ROICoordinateConverter:
         y2_metros = (y1_pix - centro_y) * escala_vertical
         return x1_metros, y1_metros, x2_metros, y2_metros
 
-    def definir_roi_y_guardar(self,alturaDeCaptura, image_path, output_path, txt_path):
+    def definir_roi_y_guardar(self, alturaDeCaptura, image_path, output_path_base, txt_path):
         """
-        Define la ROI en la imagen y guarda las coordenadas en metros en un Json.
+        Define la ROI en la imagen y guarda las coordenadas en metros en un archivo TXT con formato JSON.
         """
-        #alturaDeCaptura = self.estimar_altura_de_captura(ply_path)
-
-        # Cargar imagen y obtener centro
+        # Cargar imagen
         depth_image = cv2.imread(image_path, cv2.IMREAD_UNCHANGED)
         altura, anchura = depth_image.shape[:2]
         centro_x, centro_y = anchura // 2, altura // 2
 
-        # Leer las coordenadas desde el archivo TXT
+        # Leer las coordenadas desde el archivo TXT y procesar cada línea
         with open(txt_path, 'r') as file:
-            coords = file.readline().strip()
-        x1, y1, x2, y2 = [int(float(coord)) for coord in coords[1:-1].split(', ')]
-        #Calcular Escala segun la altura de captura
-        escala_horizontal, escala_vertical = self.calcular_escala(alturaDeCaptura)
-        # Convertir coordenadas de píxeles a metros
-        x1_metros, y1_metros, x2_metros, y2_metros = self.convertir_pixeles_a_metros(x1, y1, x2, y2, escala_horizontal, escala_vertical, centro_x, centro_y)
+            lines = file.readlines()
 
-        # Dibujar el rectángulo de la ROI en la imagen
-        cv2.rectangle(depth_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+        for index, coords in enumerate(lines):
+            x1, y1, x2, y2 = [int(float(coord)) for coord in coords.strip()[1:-1].split(', ')]
+            
+            # Calcular escala según la altura de captura
+            escala_horizontal, escala_vertical = self.calcular_escala(alturaDeCaptura)
+            
+            # Convertir coordenadas de píxeles a metros
+            x1_metros, y1_metros, x2_metros, y2_metros = self.convertir_pixeles_a_metros(
+                x1, y1, x2, y2, escala_horizontal, escala_vertical, centro_x, centro_y)
+
+            # Dibujar el rectángulo de la ROI en la imagen
+            cv2.rectangle(depth_image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+
+            # Guardar las coordenadas de la ROI en un archivo TXT con formato JSON en otra carpeta de coordenadas transformadas
+            
+            roi_data = {'x1': x1_metros, 'y1': y1_metros, 'x2': x2_metros, 'y2': y2_metros}
+            output_file = f"{output_path_base}_{index}.txt"  # Construye el nombre del archivo con índice
+            with open(output_file, 'w') as file:
+                json.dump(roi_data, file)
+
+        # Mostrar la imagen con todas las ROIs dibujadas
         cv2.imshow("ROI en Imagen de Profundidad", depth_image)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-
-        # Guardar las coordenadas de la ROI en un archivo JSON
-        roi_data = {'x1': x1_metros, 'y1': y1_metros, 'x2': x2_metros, 'y2': y2_metros}
-        with open(output_path, 'w') as file:
-            json.dump(roi_data, file)

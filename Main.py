@@ -28,14 +28,17 @@ def main():
     archivos_ply = obtener_archivos_ordenados("ArchivosDeLaExtraccion/Ply", ".ply")
     archivos_rgb = obtener_archivos_ordenados("ArchivosDeLaExtraccion/RGB", ".png")
     archivo_coord= obtener_archivos_ordenados("ResultadosDeteccion/Coordenadas", ".txt")
+    #archivo_coord_output= obtener_archivos_ordenados("ResultadosDeteccion/Coordenadas", ".txt")
 
     for archivo_ply, archivo_rgb, archivo_coord in zip(archivos_ply, archivos_rgb, archivo_coord):
         print(f"Procesando {archivo_ply} y {archivo_rgb} y {archivo_coord}")
-        
+        #crear una carpetadonde iran las coordenadas transformadas a metrros 
+        os.makedirs("ResultadoDeteccion/CoordenadasTranformadas", exist_ok=True)
+        archivo_coord_output = os.path.join("ResultadoDeteccion/CoordenadasTranformadas", os.path.basename(archivo_coord))
         # Aquí aplicas tus procesos a cada par de archivos
         superficie_de_captura_estimada = estimar_superficie_de_captura(archivo_ply)
-        asignar_coordenadas_a_imagen(superficie_de_captura_estimada,archivo_rgb,archivo_coord,archivo_coord)
-        filtrar_nube_de_puntos(archivo_coord,archivo_ply)
+        asignar_coordenadas_a_imagen(superficie_de_captura_estimada,archivo_rgb,archivo_coord_output,archivo_coord)
+        filtrar_nube_de_puntos(archivo_coord_output,archivo_ply)
 
 
 def obtener_archivos_ordenados(directorio, extension):
