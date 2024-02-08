@@ -1,15 +1,27 @@
-# Parámetros de la escala de conversión calculados previamente
-escala_horizontal = 0.00154  # metros/píxel
-escala_vertical = 0.00152    # metros/píxel
+import math
 
-# Coordenadas de píxeles de dos esquinas opuestas de la escala de ajedrez (Ejemplo)
-# Estas deben ser reemplazadas por tus valores reales
-x1_pix, y1_pix = 402, 234  # Esquina superior izquierda
-x2_pix, y2_pix = 415, 248  # Esquina inferior derecha
+# Parámetros de la cámara
+fov_horizontal = 69  # FoV horizontal en grados
+fov_vertical = 42   # FoV vertical en grados
+altura_captura = 0.96  # Altura de captura en metros
+resolucion_ancho = 848  # Resolución en píxeles (ancho)
+resolucion_alto = 480  # Resolución en píxeles (alto)
+
+# Cálculo de ancho y alto reales en metros utilizando la altura de captura
+ancho_real = 2 * altura_captura * math.tan(math.radians(fov_horizontal / 2))
+alto_real = 2 * altura_captura * math.tan(math.radians(fov_vertical / 2))
+
+# Cálculo de la escala de conversión de píxeles a metros
+escala_horizontal = ancho_real / resolucion_ancho
+escala_vertical = alto_real / resolucion_alto
+
+# Coordenadas de píxeles de dos esquinas opuestas de la escala de ajedrez
+x1_pix, y1_pix = 99, 241  # Esquina superior izquierda
+x2_pix, y2_pix = 112, 254  # Esquina inferior derecha
 
 # Dimensiones reales de la escala de ajedrez en metros
-ancho_real_m = 22 / 1000  # 220mm convertidos a metros
-alto_real_m = 22 / 1000   # 155mm convertidos a metros
+ancho_real_m = 22 / 1000  # 22 mm convertidos a metros
+alto_real_m = 22 / 1000   # 22 mm convertidos a metros
 
 # Convertir coordenadas de píxeles a metros
 ancho_m = abs(x2_pix - x1_pix) * escala_horizontal
