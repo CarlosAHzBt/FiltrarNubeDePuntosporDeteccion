@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from torchvision.transforms import Compose, ToTensor, Normalize
 from CargarModelo import CargarModelo  # Asegúrate de tener esta clase correctamente definida
 import numpy as np
-from skimage.measure import label,regionprops  # Importar la función label
+from skimage.measure import label, regionprops  # Importar la funcion label
 
 # Configuración del dispositivo
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -34,8 +34,18 @@ def aplicar_modelo_y_visualizar(ruta_imagen):
     regions = regionprops(labeled_baches)
 
     # Filtrar regiones por área mínima (ajusta este valor según sea necesario)
-    min_area = 10  # Este es un ejemplo, deberás ajustar este valor
+    min_area = 100  # Este es un ejemplo, deberás ajustar este valor
     filtered_regions = [region for region in regions if region.area >= min_area]
+
+    #guardar la imagen de la mascara de segmentacion
+    plt.imsave('ModeloSegmentacion\mascara_segmentacion.png', predicted_mask, cmap='viridis')
+
+    # Visualización (mantenemos tu código original aquí)
+    imagen = Image.open(ruta_imagen).convert("RGB")
+    predicted_mask_image = Image.fromarray(predicted_mask.astype(np.uint8))
+    original_size = imagen.size
+    resized_mask_image = predicted_mask_image.resize(original_size, Image.NEAREST)
+    resized_mask = np.array(resized_mask_image)
 
     # Guardar las coordenadas de las regiones filtradas
     for region in filtered_regions:
@@ -45,12 +55,7 @@ def aplicar_modelo_y_visualizar(ruta_imagen):
             for y, x in coords:
                 file.write(f"{x},{y}\n")
         
-    # Visualización (mantenemos tu código original aquí)
-    imagen = Image.open(ruta_imagen).convert("RGB")
-    predicted_mask_image = Image.fromarray(predicted_mask.astype(np.uint8))
-    original_size = imagen.size
-    resized_mask_image = predicted_mask_image.resize(original_size, Image.NEAREST)
-    resized_mask = np.array(resized_mask_image)
+
 
     plt.figure(figsize=(12, 12))
     plt.subplot(1, 2, 1)
@@ -62,6 +67,11 @@ def aplicar_modelo_y_visualizar(ruta_imagen):
     plt.colorbar()
     plt.show()
 
+    #Guardar imagen de la mascara de segmentacion redimensionada con cmap viridis
+    plt.imsave('ModeloSegmentacion\mascara_segmentacion_redimensionada.png', resized_mask_image)
+    
+
+    
 # Ruta a la imagen de entrada
 ruta_imagen = 'ArchivosDeLaExtraccion\RGBcolor_image.png'  # Actualiza esto con la ruta a tu imagen
 
