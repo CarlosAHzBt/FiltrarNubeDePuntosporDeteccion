@@ -3,10 +3,8 @@ from Segformer_FineTuner import SegformerFinetuner
 import torch
 
 class CargarModelo:
-    def __init__(self):
-        self.args = None
-        self.kwargs = None
-    def cargar_modelo():
+        
+    def cargar_modelo(self):
      # Crear una nueva instancia del modelo
      id2label = {
         0: "background",
