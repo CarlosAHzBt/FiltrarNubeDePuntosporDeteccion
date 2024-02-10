@@ -1,6 +1,6 @@
-
 import cv2 as cv
 import numpy as np
+
 # Cargar la imagen original
 imagen_original = cv.imread('ModeloSegmentacion/mascara_segmentacion.png')
 
@@ -19,7 +19,7 @@ contornos, _ = cv.findContours(mask, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)
 # Dibujar solo el contorno externo más grande (asumiendo que es el del bache)
 contorno_externo = max(contornos, key=cv.contourArea)
 mask_contorno = np.zeros_like(mask)
-cv.drawContours(mask_contorno, [contorno_externo], -1, (255), thickness=cv.FILLED)
+cv.drawContours(mask_contorno, [contorno_externo], -1, (255), thickness=1)  # Establece el grosor de la línea
 
 # Opcionalmente, aplicar la máscara a la imagen original para visualizar el contorno del bache
 imagen_contorno = cv.bitwise_and(imagen_original, imagen_original, mask=mask_contorno)
