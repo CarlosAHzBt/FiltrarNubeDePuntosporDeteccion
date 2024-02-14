@@ -65,7 +65,7 @@ def aplicar_modelo_y_visualizar(ruta_imagen):
     plt.imsave('mascara_segmentacion_redimensionada.png', predicted_mask_resized, cmap='viridis')
 
 # Ruta a la imagen de entrada
-ruta_imagen = 'ArchivosDeLaExtraccion/RGBcolor_image.png'  # Actualiza esto con la ruta a tu imagen
+ruta_imagen = 'ArchivosDeLaExtraccion/frame_06284.png'  # Actualiza esto con la ruta a tu imagen
 
 # Aplicar el modelo a la imagen y visualizar la detección
 aplicar_modelo_y_visualizar(ruta_imagen)

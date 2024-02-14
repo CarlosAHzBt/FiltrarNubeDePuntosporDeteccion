@@ -2,10 +2,10 @@ import cv2 as cv
 import numpy as np
 
 # Cargar la imagen original
-imagen_original = cv.imread('ModeloSegmentacion/mascara_segmentacion_redimensionada.png')
+imagen_original = cv.imread('mascara_segmentacion_redimensionada.png')
 
 # Cargar las coordenadas que incluyen el contorno y el interior del bache
-coordenadas = np.loadtxt('roi_bache_7.txt', delimiter=',')
+coordenadas = np.loadtxt('roi_bache_3.txt', delimiter=',')
 
 # Crear una imagen en negro con las mismas dimensiones que la imagen original
 imagen_contorno = np.zeros((480, 848, 3), dtype=np.uint8)
