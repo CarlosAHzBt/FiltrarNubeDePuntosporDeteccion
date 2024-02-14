@@ -5,6 +5,7 @@ from torchvision.transforms import Compose, ToTensor, Normalize
 from CargarModelo import CargarModelo  # Asegúrate de tener esta clase correctamente definida
 import numpy as np
 from skimage.measure import label, regionprops  # Importar la funcion label
+from skimage.transform import resize
 
 # Configuración del dispositivo
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -28,52 +29,43 @@ def aplicar_modelo_y_visualizar(ruta_imagen):
     with torch.no_grad():
         predicciones = modelo(pixel_values=pixel_values)
         predicted_mask = predicciones[0].argmax(dim=1).squeeze().cpu().numpy()
-    
-        # Etiquetar cada bache en la máscara de segmentación
-    labeled_baches = label(predicted_mask, connectivity=2)
-    regions = regionprops(labeled_baches)
+
+    # Redimensionar la máscara de segmentación a la resolución deseada
+    predicted_mask_resized = resize(predicted_mask, (480, 848), order=0, preserve_range=True, anti_aliasing=False).astype(int)
+
+    # Etiquetar cada región en la máscara de segmentación redimensionada
+    labeled_baches_resized = label(predicted_mask_resized, connectivity=2)
+    regions_resized = regionprops(labeled_baches_resized)
 
     # Filtrar regiones por área mínima (ajusta este valor según sea necesario)
-    min_area = 100  # Este es un ejemplo, deberás ajustar este valor
-    filtered_regions = [region for region in regions if region.area >= min_area]
+    min_area = 10000  # Este es un ejemplo, deberás ajustar este valor
+    filtered_regions_resized = [region for region in regions_resized if region.area >= min_area]
 
-    #guardar la imagen de la mascara de segmentacion
-    plt.imsave('ModeloSegmentacion\mascara_segmentacion.png', predicted_mask, cmap='viridis')
-
-    # Visualización (mantenemos tu código original aquí)
-    imagen = Image.open(ruta_imagen).convert("RGB")
-    predicted_mask_image = Image.fromarray(predicted_mask.astype(np.uint8))
-    original_size = imagen.size
-    resized_mask_image = predicted_mask_image.resize(original_size, Image.NEAREST)
-    resized_mask = np.array(resized_mask_image)
-
-    # Guardar las coordenadas de las regiones filtradas
-    for region in filtered_regions:
+    # Guardar las coordenadas de las regiones filtradas de la imagen redimensionada
+    for region in filtered_regions_resized:
         # Obtener coordenadas de la región
         coords = region.coords
         with open(f"roi_bache_{region.label}.txt", "w") as file:
             for y, x in coords:
                 file.write(f"{x},{y}\n")
-        
 
-
-    plt.figure(figsize=(12, 12))
+    # Visualización (opcional)
+    imagen = Image.open(ruta_imagen).convert("RGB")
+    plt.figure(figsize=(12, 6))
     plt.subplot(1, 2, 1)
     plt.imshow(imagen)
     plt.title('Imagen Original')
     plt.subplot(1, 2, 2)
-    plt.imshow(resized_mask, cmap='viridis')
+    plt.imshow(predicted_mask_resized, cmap='viridis')
     plt.title('Máscara de Segmentación Redimensionada')
     plt.colorbar()
     plt.show()
 
-    #Guardar imagen de la mascara de segmentacion redimensionada con cmap viridis
-    plt.imsave('ModeloSegmentacion\mascara_segmentacion_redimensionada.png', resized_mask_image)
-    
+    # Guardar la imagen de la máscara de segmentación redimensionada
+    plt.imsave('mascara_segmentacion_redimensionada.png', predicted_mask_resized, cmap='viridis')
 
-    
 # Ruta a la imagen de entrada
-ruta_imagen = 'ArchivosDeLaExtraccion\RGBcolor_image.png'  # Actualiza esto con la ruta a tu imagen
+ruta_imagen = 'ArchivosDeLaExtraccion/RGBcolor_image.png'  # Actualiza esto con la ruta a tu imagen
 
 # Aplicar el modelo a la imagen y visualizar la detección
 aplicar_modelo_y_visualizar(ruta_imagen)

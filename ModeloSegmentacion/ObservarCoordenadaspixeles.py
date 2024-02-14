@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 
 # Replace 'path_to_your_file.txt' with the actual path to your txt file
-coordinates_path = 'contorno_escalado.txt'
+coordinates_path = 'roi_bache_7.txt'
 
 # Load the coordinates from txt file
 coordinates = np.loadtxt(coordinates_path, delimiter=',')
