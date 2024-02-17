@@ -19,7 +19,7 @@ contornos, _ = cv.findContours(cv.cvtColor(imagen_contorno, cv.COLOR_BGR2GRAY), 
 
 # Dibujar el contorno más grande
 contorno_externo = max(contornos, key=cv.contourArea)
-cv.drawContours(imagen_contorno, [contorno_externo], -1, (0, 255, 0), 2)
+cv.drawContours(imagen_contorno, [contorno_externo], -1, (0, 255, 0), 1)
 
 # Buscar el radio máximo y el centro del círculo
 radio_maximo = 0
